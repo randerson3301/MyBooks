@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">MyBooks</string>
+    <string name="pequeno_principe"> Este livro é marcado pelo seu alto teor filosófico e poético,
+        mesmo sendo considerado uma literatura para crianças.
+    </string>
+
+    <string name="cinquenta_tons">
+        Quando Anastasia Steele entrevista o jovem empresário Christian Grey, descobre nele um homem atraente, brilhante e profundamente dominador. Ingênua e inocente, Ana se surpreende ao perceber que, a despeito da enigmática reserva de Grey, está desesperadamente atraída por ele. Incapaz de resistir à beleza discreta, à timidez e ao espírito independente de Ana, Grey admite que também a deseja —
+        mas em seus próprios termos.Chocada e ao mesmo tempo seduzida pelas estranhas preferências de Grey, Ana hesita.
+    </string>
+
+    <string name="kotlin_android">
+        A linguagem Kotlin vem ganhando cada vez mais destaque no cenário do desenvolvimento de aplicativos. Projetada para ter uma interoperabilidade total com código Java, Kotlin tem sido a primeira escolha na criação de aplicativos Android, sendo multiparadigma e multiplataforma. Trata-se de uma linguagem moderna, concisa e poderosa, oferecendo segurança, clareza e suporte a ferramentas de alta produtividade.
+
+    </string>
 </resources>
