@@ -22,16 +22,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         listaLivros = findViewById(R.id.listaLivros);
         livros = new Livro[] {
+                /*
             new Livro(1, Utils.toByteArray(getResources(), R.drawable.pequeno_principe), "O pequeno principe", getString(R.string.pequeno_principe)),
                 new Livro(2, Utils.toByteArray(getResources(), R.drawable.cinquenta_tons_cinza), "Cinquenta tons de cinza",
                         getString(R.string.cinquenta_tons)),
                 new Livro(3, Utils.toByteArray(getResources(), R.drawable.kotlin_android), "Kotlin Para Android",
                         getString(R.string.kotlin_android))
-
+            */
         };
-        setContentView(R.layout.activity_main);
+
 
         //Fake
         byte[] capa = Utils.toByteArray(getResources(), R.drawable.pequeno_principe); //covertendo a imagem em um array de bytes
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        listaLivros.removeAllViews();
         for (Livro l: livros) {
             criarLivro(l, listaLivros);
         }
