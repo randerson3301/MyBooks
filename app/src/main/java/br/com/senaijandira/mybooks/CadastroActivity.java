@@ -2,6 +2,7 @@ package br.com.senaijandira.mybooks;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
 
 public class CadastroActivity extends AppCompatActivity {
@@ -21,17 +23,22 @@ public class CadastroActivity extends AppCompatActivity {
     ImageView imgLivroCapa;
     Bitmap livroCapa;
     EditText txtTitulo, txtDescricao;
-
+    private MyBooksDatabase myBooksDb;
     private final int COD_REQ_GALERIA = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
-
         imgLivroCapa = findViewById(R.id.imgLivroCapa);
         txtTitulo = findViewById(R.id.txtTitulo);
         txtDescricao = findViewById(R.id.txtDesc);
+
+        myBooksDb = Room.databaseBuilder(getApplicationContext(), MyBooksDatabase.class, Utils.DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
+
 
     }
 
@@ -93,18 +100,22 @@ public class CadastroActivity extends AppCompatActivity {
         } else {
             capa = Utils.toByteArray(livroCapa);
 
-            Livro livro = new Livro(0, capa, titulo, descricao);
 
-            int tamanhoArray = MainActivity.livros.length;
+            Livro livro = new Livro(capa, titulo, descricao);
 
-
+            /*
             MainActivity.livros = Arrays.copyOf(MainActivity.livros,
                     tamanhoArray + 1);
 
             //Inserindo no espaço a mais
             MainActivity.livros[tamanhoArray] = livro;
+            */
+
+            myBooksDb.daoLivro().inserir(livro);
 
             alert.setMessage("É isso meu jovem");
+
+
         }
 
         alert.create().show();
