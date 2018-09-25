@@ -1,6 +1,7 @@
 package br.com.senaijandira.mybooks;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -9,34 +10,41 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
 
 public class MainActivity extends AppCompatActivity {
-    LinearLayout listaLivros;
     public static  Livro[] livros;
-
     private MyBooksDatabase myBooksDb; //variavel de acesso ao banco
 
+    //Chamando a class ListView que guardará os cardviews dentro, para poder estruturar a lista geral
+    ListView lstListaLivros;
+
+    LivrosAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listaLivros = findViewById(R.id.listaLivros);
 
+        lstListaLivros = findViewById(R.id.lstListaLivros); //setando o id para o ListView
         //instanciando...
         myBooksDb = Room.databaseBuilder(getApplicationContext(), MyBooksDatabase.class, Utils.DATABASE_NAME)
         .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build();
 
-
+        adapter = new LivrosAdapter(this);
+        lstListaLivros.setAdapter(adapter);
         livros = new Livro[] {
                 /*
             new Livro(1, Utils.toByteArray(getResources(), R.drawable.pequeno_principe), "O pequeno principe", getString(R.string.pequeno_principe)),
@@ -65,10 +73,12 @@ public class MainActivity extends AppCompatActivity {
         //Faz o select de todos os livros cadastros
         livros = myBooksDb.daoLivro().selecionarTodos();
 
+        /*
         listaLivros.removeAllViews();
         for (Livro l: livros) {
             criarLivro(l, listaLivros);
         }
+        */
     }
 
 
@@ -84,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 myBooksDb.daoLivro().excluir(l);
 
+                /*
                 listaLivros.removeView(v);
+                */
             }
         });
 
@@ -127,11 +139,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void abrirCadastro(View v){
+        /*
         listaLivros.removeAllViews();
+        */
         startActivity(new Intent(
                 this,
                 CadastroActivity.class
         ));
+    }
+
+
+    /*
+        A class LivroAdapater precisa de um construtor , e dentro desse construtor
+    * precisa ser colocado um super com os respectivos parâmetros e uma instancia da
+    * class ArrayList para assim poder armazenar os livros, como se fosse uma lista.
+    * */
+    private class LivrosAdapter extends ArrayAdapter<Livro> {
+        public LivrosAdapter(Context ctx) {
+            super(ctx, 0, new ArrayList<Livro>());
+        }
     }
 
 
