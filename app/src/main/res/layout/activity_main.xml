@@ -7,24 +7,12 @@
     tools:context=".MainActivity"
     android:background="@color/colorPrimary"
     >
-  <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="16dp">
-
-      <ListView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/lstListaLivros"
-          >
-      </ListView>
     <!--
     <include layout="@layout/livro_layout">
     </include>
     -->
 
 
-</ScrollView>
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +23,20 @@
         android:onClick="abrirCadastro"
         ></android.support.design.widget.FloatingActionButton>
 
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="75dp"
+        android:layout_marginRight="16dp"
+        android:layout_gravity="bottom|right"
+        app:srcCompat="@android:drawable/ic_dialog_dialer"
+        android:tint="#fff"
+        ></android.support.design.widget.FloatingActionButton>
 
+    <ListView
+        android:id="@+id/lstListaLivros"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
 
 
 </android.support.design.widget.CoordinatorLayout>

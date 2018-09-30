@@ -39,19 +39,36 @@
                     android:id="@+id/txtTituloLivro"
                     />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtLivroDescricao"
                     android:text="@string/pequeno_principe"
                     />
 
             </LinearLayout>
+            <!--
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/options"
+                android:id="@+id/options"
+                android:layout_marginRight="6dp"
+
+                />
+            -->
+            <Spinner
+                android:layout_width="110dp"
+                android:layout_height="30dp"
+                android:id="@+id/spin"
+                ></Spinner>
+
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/delete"
                 android:id="@+id/imgDeleteLivro"
+
                 />
         </LinearLayout>
     </android.support.v7.widget.CardView>

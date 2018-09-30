@@ -4,6 +4,8 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,10 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        livros = new Livro[] {};
+
         lstListaLivros = findViewById(R.id.lstListaLivros); //setando o id para o ListView
         //instanciando...
         myBooksDb = Room.databaseBuilder(getApplicationContext(), MyBooksDatabase.class, Utils.DATABASE_NAME)
@@ -45,40 +51,29 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new LivrosAdapter(this);
         lstListaLivros.setAdapter(adapter);
-        livros = new Livro[] {
-                /*
-            new Livro(1, Utils.toByteArray(getResources(), R.drawable.pequeno_principe), "O pequeno principe", getString(R.string.pequeno_principe)),
-                new Livro(2, Utils.toByteArray(getResources(), R.drawable.cinquenta_tons_cinza), "Cinquenta tons de cinza",
-                        getString(R.string.cinquenta_tons)),
-                new Livro(3, Utils.toByteArray(getResources(), R.drawable.kotlin_android), "Kotlin Para Android",
-                        getString(R.string.kotlin_android))
-            */
-        };
 
-        /*
-        //Fake
-        byte[] capa = Utils.toByteArray(getResources(), R.drawable.pequeno_principe); //covertendo a imagem em um array de bytes
-        Livro livro = new Livro(1,
-                 capa,
-                "O Pequeno Principe",
-                getString(R.string.pequeno_principe));*/
+
+
+
 
 
     }
 
+    public void carregarLivro() {
+
+        //mostra todos os livros inseridos na lista
+        adapter.clear(); //não mostra registros repetidos
+        Livro[] livros = myBooksDb.daoLivro().selecionarTodos();
+
+        adapter.addAll(livros);
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
+        carregarLivro();
 
-        //Faz o select de todos os livros cadastros
-        livros = myBooksDb.daoLivro().selecionarTodos();
-
-        /*
-        listaLivros.removeAllViews();
-        for (Livro l: livros) {
-            criarLivro(l, listaLivros);
-        }
-        */
     }
 
 
@@ -94,9 +89,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 myBooksDb.daoLivro().excluir(l);
 
-                /*
-                listaLivros.removeView(v);
-                */
+                carregarLivro(); //atualiza a tela sem o livro excluído
+
             }
         });
 
@@ -135,13 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Exibindo na tela
         root.addView(v);
-
     }
 
     public void abrirCadastro(View v){
-        /*
-        listaLivros.removeAllViews();
-        */
         startActivity(new Intent(
                 this,
                 CadastroActivity.class
@@ -157,6 +147,66 @@ public class MainActivity extends AppCompatActivity {
     private class LivrosAdapter extends ArrayAdapter<Livro> {
         public LivrosAdapter(Context ctx) {
             super(ctx, 0, new ArrayList<Livro>());
+        }
+
+        //Retornando o layout do livro com os dados
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View v = convertView;
+
+
+            /*
+            * Caso a view não retorne com o layout determinado, o procedure dentro do if
+            * irá fazer isso de forma automática.*/
+            if(v == null) {
+                v = LayoutInflater.from(getContext()).inflate(R.layout.livro_layout, parent,
+                        false);
+            }
+
+            final Livro l = getItem(position);
+
+            //Pegando os ids da livrolayout.xml
+            ImageView imageView = v.findViewById(R.id.imgLivroCapa);
+
+            TextView txtTitulo = v.findViewById(R.id.txtTituloLivro);
+
+            TextView txtDesc = v.findViewById(R.id.txtLivroDescricao);
+
+            //img lixeira
+            ImageView imgDelete = v.findViewById(R.id.imgDeleteLivro);
+
+            imgDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deletarLivro( l , view);
+                }
+            });
+
+            //setando o conteúdo do livro
+            imageView.setImageBitmap(Utils.toBitmap(l.getCapa()));
+
+            //inserindo conteúdo
+            txtTitulo.setText(l.getTitulo());
+            txtDesc.setText(l.getDescricao());
+
+            //inserindo opções para o spinner
+            Spinner spinner = (Spinner) v.findViewById(R.id.spin);
+
+            //criando um SpinnerAdapter para armazenar o array de strings options
+            ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this.getContext(),
+                    R.array.options, android.R.layout.simple_spinner_item);
+
+            //setando a forma com que quero que o spinner mostre as opções
+            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            //setando o adapter
+            spinner.setAdapter(adapterSpinner);
+
+
+
+            return v;
         }
     }
 

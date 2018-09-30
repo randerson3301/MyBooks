@@ -12,4 +12,10 @@
         A linguagem Kotlin vem ganhando cada vez mais destaque no cenário do desenvolvimento de aplicativos. Projetada para ter uma interoperabilidade total com código Java, Kotlin tem sido a primeira escolha na criação de aplicativos Android, sendo multiparadigma e multiplataforma.
 
     </string>
+    <!-- opções que serão inseridas dentro do spinner -->
+    <string-array name="options">
+        <item>Selecione...</item>
+        <item> Já li</item>
+        <item>  Não li </item>
+    </string-array>
 </resources>

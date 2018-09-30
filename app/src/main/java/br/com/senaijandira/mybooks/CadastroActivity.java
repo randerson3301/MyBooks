@@ -2,6 +2,7 @@ package br.com.senaijandira.mybooks;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,6 +39,8 @@ public class CadastroActivity extends AppCompatActivity {
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build();
+
+
 
 
     }
@@ -89,9 +92,8 @@ public class CadastroActivity extends AppCompatActivity {
 
         descricao = txtDescricao.getText().toString();
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Info");
-
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+        alert.setTitle("⚠️ Oopss...");
 
 
         if(livroCapa == null || titulo.equals("") || descricao.equals("")) {
@@ -102,20 +104,25 @@ public class CadastroActivity extends AppCompatActivity {
 
 
             Livro livro = new Livro(capa, titulo, descricao);
+             int tamanhoArray = MainActivity.livros.length;
 
-            /*
+
             MainActivity.livros = Arrays.copyOf(MainActivity.livros,
                     tamanhoArray + 1);
 
+
             //Inserindo no espaço a mais
             MainActivity.livros[tamanhoArray] = livro;
-            */
+
 
             myBooksDb.daoLivro().inserir(livro);
 
+            tamanhoArray = 0;
+
             alert.setMessage("É isso meu jovem");
 
-
+            txtTitulo.setText("");
+            txtDescricao.setText("");
         }
 
         alert.create().show();
