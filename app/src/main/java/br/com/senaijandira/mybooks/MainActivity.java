@@ -1,27 +1,26 @@
 package br.com.senaijandira.mybooks;
 
+import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Chamando a class ListView que guardará os cardviews dentro, para poder estruturar a lista geral
     ListView lstListaLivros;
-
+    SpinnerActivity teste;
     LivrosAdapter adapter;
 
     @Override
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         livros = new Livro[] {};
 
         lstListaLivros = findViewById(R.id.lstListaLivros); //setando o id para o ListView
+        teste = new SpinnerActivity();
         //instanciando...
         myBooksDb = Room.databaseBuilder(getApplicationContext(), MyBooksDatabase.class, Utils.DATABASE_NAME)
         .fallbackToDestructiveMigration()
@@ -51,12 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new LivrosAdapter(this);
         lstListaLivros.setAdapter(adapter);
-
-
-
-
-
-
     }
 
     public void carregarLivro() {
@@ -90,6 +84,35 @@ public class MainActivity extends AppCompatActivity {
                 myBooksDb.daoLivro().excluir(l);
 
                 carregarLivro(); //atualiza a tela sem o livro excluído
+
+            }
+        });
+
+        alert.show();
+
+
+    }
+    //essa var vai armazenar o id do livro, e passar para a EditarActivity
+    static int id;
+
+    public void  atualizarLivro(final Livro l, final View v) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Atualizar");
+        alert.setMessage("Tem certeza de que deseja atualizar ?");
+        alert.setNegativeButton("Não", null);
+
+        alert.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            id = l.getId();
+/*
+            startActivity(new Intent(
+                        getApplicationContext(),
+                        CadastroActivity.class
+            ));
+*/
 
             }
         });
@@ -201,8 +224,12 @@ public class MainActivity extends AppCompatActivity {
             //setando a forma com que quero que o spinner mostre as opções
             adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+            adapterSpinner.getItem(0);
+            teste.onItemSelected(spinner, v, 1, 1);
             //setando o adapter
             spinner.setAdapter(adapterSpinner);
+
+
 
 
 
@@ -210,5 +237,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            parent.getItemAtPosition(position);
+
+            AlertDialog.Builder alertSpiner = new AlertDialog.Builder(this);
+
+            alertSpiner.setMessage("Aeeee");
+
+            alertSpiner.create();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    }
+
 
 }
+
