@@ -1,6 +1,5 @@
 package br.com.senaijandira.mybooks;
 
-import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,23 +26,27 @@ import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
 
 public class MainActivity extends AppCompatActivity {
+
+    Spinner spinner;
     public static  Livro[] livros;
     private MyBooksDatabase myBooksDb; //variavel de acesso ao banco
 
+
+
     //Chamando a class ListView que guardará os cardviews dentro, para poder estruturar a lista geral
     ListView lstListaLivros;
-    SpinnerActivity teste;
     LivrosAdapter adapter;
+    ArrayAdapter<CharSequence> adapterSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         livros = new Livro[] {};
 
         lstListaLivros = findViewById(R.id.lstListaLivros); //setando o id para o ListView
-        teste = new SpinnerActivity();
+
+
         //instanciando...
         myBooksDb = Room.databaseBuilder(getApplicationContext(), MyBooksDatabase.class, Utils.DATABASE_NAME)
         .fallbackToDestructiveMigration()
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         carregarLivro();
 
     }
+
 
 
     public void  deletarLivro(final Livro l, final View v) {
@@ -166,14 +171,32 @@ public class MainActivity extends AppCompatActivity {
         A class LivroAdapater precisa de um construtor , e dentro desse construtor
     * precisa ser colocado um super com os respectivos parâmetros e uma instancia da
     * class ArrayList para assim poder armazenar os livros, como se fosse uma lista.
+    * Para poder adicionar eventos ao Spinner é necessário implementar a interface
+    * AdapterView.OnItemSelectedListener e configurar dentro dos métodos
     * */
-    private class LivrosAdapter extends ArrayAdapter<Livro> {
+    private class LivrosAdapter extends ArrayAdapter<Livro> implements AdapterView.OnItemSelectedListener {
         public LivrosAdapter(Context ctx) {
             super(ctx, 0, new ArrayList<Livro>());
         }
 
-        //Retornando o layout do livro com os dados
+        //-------------MÉTODOS DA OnItemSelectedListener-----------------------
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if(position == 1) {
+                Toast.makeText(parent.getContext(), "Estou aqui! ", Toast.LENGTH_SHORT).show();
 
+
+            } else if(position == 2) {
+                Toast.makeText(parent.getContext(), "Não estou mais! ", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+
+        //Retornando o layout do livro com os dados
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -215,46 +238,22 @@ public class MainActivity extends AppCompatActivity {
             txtDesc.setText(l.getDescricao());
 
             //inserindo opções para o spinner
-            Spinner spinner = (Spinner) v.findViewById(R.id.spin);
+            spinner = (Spinner) v.findViewById(R.id.spin);
+            spinner.setOnItemSelectedListener(this);
 
             //criando um SpinnerAdapter para armazenar o array de strings options
-            ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this.getContext(),
-                    R.array.options, android.R.layout.simple_spinner_item);
+            adapterSpinner = ArrayAdapter.createFromResource(this.getContext(), R.array.options,
+                    android.R.layout.simple_spinner_item);
 
             //setando a forma com que quero que o spinner mostre as opções
             adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            adapterSpinner.getItem(0);
-            teste.onItemSelected(spinner, v, 1, 1);
             //setando o adapter
             spinner.setAdapter(adapterSpinner);
-
-
-
-
-
-            return v;
+             return v;
         }
+
+
     }
-
-    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            parent.getItemAtPosition(position);
-
-            AlertDialog.Builder alertSpiner = new AlertDialog.Builder(this);
-
-            alertSpiner.setMessage("Aeeee");
-
-            alertSpiner.create();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-    }
-
-
 }
 
