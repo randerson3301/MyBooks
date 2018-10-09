@@ -13,6 +13,7 @@ public class Livro {
     private int id;
     private String descricao;
     private String titulo;
+
     private boolean isLido;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB) //Setando o tipo da capa como blob no banco

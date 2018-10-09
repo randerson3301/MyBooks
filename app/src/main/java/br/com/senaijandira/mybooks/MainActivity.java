@@ -1,5 +1,6 @@
 package br.com.senaijandira.mybooks;
 
+import android.app.Fragment;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -23,80 +27,78 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
+import br.com.senaijandira.mybooks.fragments.FragmentLivrosGerais;
+import br.com.senaijandira.mybooks.fragments.FragmentLivrosLidos;
 import br.com.senaijandira.mybooks.model.Livro;
 
 public class MainActivity extends AppCompatActivity {
 
-    Spinner spinner;
+
     public static  Livro[] livros;
-    private MyBooksDatabase myBooksDb; //variavel de acesso ao banco
-
-
+    TabLayout tabMenu;
+    FragmentManager fm;
 
     //Chamando a class ListView que guardará os cardviews dentro, para poder estruturar a lista geral
-    ListView lstListaLivros;
-    LivrosAdapter adapter;
-    ArrayAdapter<CharSequence> adapterSpinner;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         livros = new Livro[] {};
+        tabMenu = findViewById(R.id.tabMenu);
 
-        lstListaLivros = findViewById(R.id.lstListaLivros); //setando o id para o ListView
+        //Instanciando FragmentManager
+        fm = getSupportFragmentManager();
 
+        openFragmentGeral();
 
-        //instanciando...
-        myBooksDb = Room.databaseBuilder(getApplicationContext(), MyBooksDatabase.class, Utils.DATABASE_NAME)
-        .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build();
-
-        adapter = new LivrosAdapter(this);
-        lstListaLivros.setAdapter(adapter);
-    }
-
-    public void carregarLivro() {
-
-        //mostra todos os livros inseridos na lista
-        adapter.clear(); //não mostra registros repetidos
-        Livro[] livros = myBooksDb.daoLivro().selecionarTodos();
-
-        adapter.addAll(livros);
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        carregarLivro();
-
-    }
-
-
-
-    public void  deletarLivro(final Livro l, final View v) {
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Excluir");
-        alert.setMessage("Tem certeza de que deseja excluir ?");
-        alert.setNegativeButton("Não", null);
-
-        alert.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+        tabMenu.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                myBooksDb.daoLivro().excluir(l);
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    openFragmentGeral();
+                } else if(tab.getPosition() == 1) {
+                    openFragmentLidos();
+                }
+            }
 
-                carregarLivro(); //atualiza a tela sem o livro excluído
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
 
-        alert.show();
-
 
     }
+
+    //Irá abrir o fragment dos livros gerais
+    public void openFragmentGeral() {
+        FragmentTransaction ft = fm.beginTransaction();
+
+        //O frameLayout será substituido pelo class FragmentLivrosGerais
+        ft.replace(R.id.frameLayout, new FragmentLivrosGerais());
+
+        ft.commit();
+    }
+    //Irá abrir o fragment dos livros lidos
+    public void openFragmentLidos() {
+        FragmentTransaction ft = fm.beginTransaction();
+
+        //O frameLayout será substituido pelo class FragmentLivrosGerais
+        ft.replace(R.id.frameLayout, new FragmentLivrosLidos());
+
+        ft.commit();
+    }
+
+
+
     //essa var vai armazenar o id do livro, e passar para a EditarActivity
     static int id;
 
@@ -126,10 +128,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
-
-
     //método para criar livro
     //ViewGroup é um grupo de elementos view
     public void criarLivro(final Livro livro, ViewGroup root) {
@@ -143,12 +141,7 @@ public class MainActivity extends AppCompatActivity {
         //img lixeira
         ImageView imgDelete = v.findViewById(R.id.imgDeleteLivro);
 
-        imgDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deletarLivro(livro, v);
-            }
-        });
+
 
         //setando o conteúdo do livro
         imgLivroCapa.setImageBitmap(Utils.toBitmap(livro.getCapa())); //convertendo array de bytes para bitmap
@@ -174,92 +167,6 @@ public class MainActivity extends AppCompatActivity {
     * Para poder adicionar eventos ao Spinner é necessário implementar a interface
     * AdapterView.OnItemSelectedListener e configurar dentro dos métodos
     * */
-    private class LivrosAdapter extends ArrayAdapter<Livro> implements
-            AdapterView.OnItemSelectedListener {
-        public LivrosAdapter(Context ctx) {
-            super(ctx, 0, new ArrayList<Livro>());
-        }
-        Livro l = null;
-        //-------------MÉTODOS DA OnItemSelectedListener-----------------------
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if(position == 1) {
-                //Toast.makeText(parent.getContext(), "Estou aqui! ", Toast.LENGTH_SHORT).show();
-                l.setLido(true);
-                Toast.makeText(parent.getContext(), "Você já leu !! ", Toast.LENGTH_SHORT).show();
 
-            } else if(position == 2) {
-                l.setLido(false);
-                Toast.makeText(parent.getContext(), "Você ainda n leu !!! ", Toast.LENGTH_SHORT).show();
-
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
-
-        //Retornando o layout do livro com os dados
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View v = convertView;
-
-
-            /*
-            * Caso a view não retorne com o layout determinado, o procedure dentro do if
-            * irá fazer isso de forma automática.*/
-            if(v == null) {
-                v = LayoutInflater.from(getContext()).inflate(R.layout.livro_layout, parent,
-                        false);
-            }
-
-             l = getItem(position);
-
-
-
-            //Pegando os ids da livrolayout.xml
-            ImageView imageView = v.findViewById(R.id.imgLivroCapa);
-
-            TextView txtTitulo = v.findViewById(R.id.txtTituloLivro);
-
-            TextView txtDesc = v.findViewById(R.id.txtLivroDescricao);
-
-            //img lixeira
-            ImageView imgDelete = v.findViewById(R.id.imgDeleteLivro);
-
-            imgDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deletarLivro( l , view);
-                }
-            });
-
-            //setando o conteúdo do livro
-            imageView.setImageBitmap(Utils.toBitmap(l.getCapa()));
-
-            //inserindo conteúdo
-            txtTitulo.setText(l.getTitulo());
-            txtDesc.setText(l.getDescricao());
-
-            //inserindo opções para o spinner
-            spinner = (Spinner) v.findViewById(R.id.spin);
-            spinner.setOnItemSelectedListener(this);
-
-            //criando um SpinnerAdapter para armazenar o array de strings options
-            adapterSpinner = ArrayAdapter.createFromResource(this.getContext(), R.array.options,
-                    android.R.layout.simple_spinner_item);
-
-            //setando a forma com que quero que o spinner mostre as opções
-            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            //setando o adapter
-            spinner.setAdapter(adapterSpinner);
-             return v;
-        }
-
-
-    }
 }
 

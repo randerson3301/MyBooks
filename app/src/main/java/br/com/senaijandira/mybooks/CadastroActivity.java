@@ -123,6 +123,9 @@ public class CadastroActivity extends AppCompatActivity {
 
             txtTitulo.setText("");
             txtDescricao.setText("");
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
         alert.create().show();
