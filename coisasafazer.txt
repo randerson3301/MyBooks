@@ -1,7 +1,0 @@
-mudar cardview para listview;
-
-colocar a class adapter;
-
-colocar novos atributos na entidade livro;
-
-colocar opção para visulaizar lista específica;

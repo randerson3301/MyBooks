@@ -103,7 +103,7 @@ public class CadastroActivity extends AppCompatActivity {
             capa = Utils.toByteArray(livroCapa);
 
 
-            Livro livro = new Livro(capa, titulo, descricao);
+            Livro livro = new Livro(capa, titulo, descricao, false);
              int tamanhoArray = MainActivity.livros.length;
 
 

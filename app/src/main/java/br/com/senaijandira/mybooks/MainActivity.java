@@ -174,20 +174,24 @@ public class MainActivity extends AppCompatActivity {
     * Para poder adicionar eventos ao Spinner é necessário implementar a interface
     * AdapterView.OnItemSelectedListener e configurar dentro dos métodos
     * */
-    private class LivrosAdapter extends ArrayAdapter<Livro> implements AdapterView.OnItemSelectedListener {
+    private class LivrosAdapter extends ArrayAdapter<Livro> implements
+            AdapterView.OnItemSelectedListener {
         public LivrosAdapter(Context ctx) {
             super(ctx, 0, new ArrayList<Livro>());
         }
-
+        Livro l = null;
         //-------------MÉTODOS DA OnItemSelectedListener-----------------------
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(position == 1) {
-                Toast.makeText(parent.getContext(), "Estou aqui! ", Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(parent.getContext(), "Estou aqui! ", Toast.LENGTH_SHORT).show();
+                l.setLido(true);
+                Toast.makeText(parent.getContext(), "Você já leu !! ", Toast.LENGTH_SHORT).show();
 
             } else if(position == 2) {
-                Toast.makeText(parent.getContext(), "Não estou mais! ", Toast.LENGTH_SHORT).show();
+                l.setLido(false);
+                Toast.makeText(parent.getContext(), "Você ainda n leu !!! ", Toast.LENGTH_SHORT).show();
+
             }
         }
 
@@ -211,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
                         false);
             }
 
-            final Livro l = getItem(position);
+             l = getItem(position);
+
+
 
             //Pegando os ids da livrolayout.xml
             ImageView imageView = v.findViewById(R.id.imgLivroCapa);
