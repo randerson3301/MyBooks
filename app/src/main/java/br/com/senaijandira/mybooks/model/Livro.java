@@ -13,20 +13,21 @@ public class Livro {
     private int id;
     private String descricao;
     private String titulo;
+    private Boolean added = false;
 
-    private boolean isLido;
+  //  private boolean isLido;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB) //Setando o tipo da capa como blob no banco
     private byte[] capa;
 
     public Livro() {}
 
-    public Livro(byte[] capa, String titulo, String descricao, boolean isLido) {
+    public Livro(byte[] capa, String titulo, String descricao, boolean added) {
         //this.id = id;
         this.capa = capa;
         this.titulo = titulo;
         this.descricao = descricao;
-        this.isLido = isLido;
+        this.added = added;
     }
 
     //Comportamento
@@ -62,6 +63,14 @@ public class Livro {
         this.capa = capa;
     }
 
+    public Boolean getAdded() {
+        return added;
+    }
+
+    public void setAdded(Boolean added) {
+        this.added = added;
+    }
+/*
     //métodos para retornar livros especificados
     public boolean isLido() {
         return isLido;
@@ -70,7 +79,7 @@ public class Livro {
     public void setLido(boolean lido) {
         isLido = lido;
     }
-
+*/
 
 
 }

@@ -1,13 +1,8 @@
 package br.com.senaijandira.mybooks;
 
-import android.app.Fragment;
-import android.arch.persistence.room.Room;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,17 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.fragments.FragmentLivrosGerais;
 import br.com.senaijandira.mybooks.fragments.FragmentLivrosLidos;
 import br.com.senaijandira.mybooks.model.Livro;
@@ -37,10 +24,6 @@ public class MainActivity extends AppCompatActivity {
     public static  Livro[] livros;
     TabLayout tabMenu;
     FragmentManager fm;
-
-    //Chamando a class ListView que guardará os cardviews dentro, para poder estruturar a lista geral
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

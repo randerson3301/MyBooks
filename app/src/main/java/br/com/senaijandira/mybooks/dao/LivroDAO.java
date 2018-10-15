@@ -23,8 +23,16 @@ public interface LivroDAO {
     @Delete
     void excluir(Livro l);
 
+   // @Update
+    //void updateAdded(boolean added, int id);
+
     @Query("SELECT * FROM livro")
     Livro[] selecionarTodos();
+
+    @Query("SELECT livro.* FROM livro, tbl_livros_lidos where livro.id = tbl_livros_lidos.idGeral")
+    Livro[] selecionarLivrosLidos();
+
+
 
 
 

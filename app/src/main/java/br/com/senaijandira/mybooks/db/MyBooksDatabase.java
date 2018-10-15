@@ -7,8 +7,9 @@ import android.arch.persistence.room.RoomDatabase;
 import br.com.senaijandira.mybooks.dao.LivroDAO;
 import br.com.senaijandira.mybooks.dao.LivrosLidosDAO;
 import br.com.senaijandira.mybooks.model.Livro;
+import br.com.senaijandira.mybooks.model.LivrosLidos;
 
-@Database(entities = {Livro.class}, version = 3) //Caso alguma alteração seja feita no banco, a versão será 2 e assim por diante
+@Database(entities = {Livro.class, LivrosLidos.class},  version = 4) //Caso alguma alteração seja feita no banco, a versão será 2 e assim por diante
 public abstract class MyBooksDatabase extends RoomDatabase {
 
     public abstract LivroDAO daoLivro();

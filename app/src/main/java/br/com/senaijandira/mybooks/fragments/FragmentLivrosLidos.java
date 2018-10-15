@@ -9,18 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import br.com.senaijandira.mybooks.LivrosAdapter;
+import br.com.senaijandira.mybooks.LivrosLidosAdapter;
 import br.com.senaijandira.mybooks.R;
 import br.com.senaijandira.mybooks.Utils;
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
 
+
 public class FragmentLivrosLidos extends Fragment {
     ListView lstListaLivros;
     MyBooksDatabase myBooksDb; //variavel de acesso ao banco
-    LivrosAdapter adapter;
+    LivrosLidosAdapter adapter;
     public  static Livro[] livros;
-
     //Chamando o arquivo xml da lista geral
     @Nullable
     @Override
@@ -33,11 +33,11 @@ public class FragmentLivrosLidos extends Fragment {
 
         lstListaLivros = v.findViewById(R.id.lstListaLivros); //setando o id para o ListView
 
-        adapter = new LivrosAdapter(getActivity(), myBooksDb);
+        adapter = new LivrosLidosAdapter(getActivity(), myBooksDb);
         lstListaLivros.setAdapter(adapter);
 
-
-        livros = myBooksDb.daoLivrosLidos().selecionarTodos();
+        //o array de Livros deve ser setado com o resultadp
+        livros =  myBooksDb.daoLivro().selecionarLivrosLidos();
 
         adapter.addAll(livros);
         return v;
