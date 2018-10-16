@@ -8,27 +8,64 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
+import br.com.senaijandira.mybooks.model.LivrosLidos;
 
-public class LivrosLidosAdapter extends ArrayAdapter<Livro>  {
+public class NaoLidosAdapter extends ArrayAdapter<Livro> implements
+        AdapterView.OnItemSelectedListener {
+    /*Variaveis que vieram da MainActivity*/
 
+    Spinner spinner;
+    ArrayAdapter<CharSequence> adapterSpinner;
     MyBooksDatabase myBooksDb; //variavel de acesso ao banco
 
 
-    public LivrosLidosAdapter(Context ctx, MyBooksDatabase myBooksDatabase) {
+    public NaoLidosAdapter(Context ctx, MyBooksDatabase myBooksDatabase) {
         super(ctx, 0, new ArrayList<Livro>());
         this.myBooksDb = myBooksDatabase;
 
     }
     Livro l = null;
 
+
+
+    //-------------MÉTODOS DA OnItemSelectedListener-----------------------
+  //  LivrosLidos[] livrosLidos = myBooksDb.daoLivrosLidos().selecionarTodos();
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        boolean added = false;
+
+        if(position == 1) {
+            //Toast.makeText(parent.getContext(), "Estou aqui! ", Toast.LENGTH_SHORT).show();
+            if (!l.getAdded()) {
+                LivrosLidos lidos = new LivrosLidos();
+                lidos.setIdGeral(l.getId());
+                myBooksDb.daoLivrosLidos().inserir(lidos);
+                l.setAdded(true);
+
+                myBooksDb.daoLivro().atualizar(l);
+            } else {
+                Toast.makeText(parent.getContext(), "O livro já foi adicionado. ", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
     public void  deletarLivro(final Livro l, final View v) {
 
@@ -42,7 +79,7 @@ public class LivrosLidosAdapter extends ArrayAdapter<Livro>  {
             public void onClick(DialogInterface dialog, int which) {
                 l.setAdded(false);
                 myBooksDb.daoLivro().atualizar(l);
-                myBooksDb.daoLivrosLidos().excluir(l.getId());
+                myBooksDb.daoNaoLidos().excluir(l.getId());
             }
 
         });
@@ -66,7 +103,7 @@ public class LivrosLidosAdapter extends ArrayAdapter<Livro>  {
                     false);
         }
 
-        l = (Livro) getItem( position);
+        l = getItem(position);
 
 
 
@@ -94,8 +131,21 @@ public class LivrosLidosAdapter extends ArrayAdapter<Livro>  {
         txtTitulo.setText(l.getTitulo());
         txtDesc.setText(l.getDescricao());
 
+        //inserindo opções para o spinner
+        spinner = (Spinner) v.findViewById(R.id.spin);
+        spinner.setOnItemSelectedListener(this);
 
+        //criando um SpinnerAdapter para armazenar o array de strings options
+        adapterSpinner = ArrayAdapter.createFromResource(this.getContext(), R.array.optionsNaoLidos,
+                android.R.layout.simple_spinner_item);
+
+        //setando a forma com que quero que o spinner mostre as opções
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //setando o adapter
+        spinner.setAdapter(adapterSpinner);
         return v;
     }
 
-    }
+
+}

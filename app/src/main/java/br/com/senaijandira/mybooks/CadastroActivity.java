@@ -102,11 +102,13 @@ public class CadastroActivity extends AppCompatActivity {
         } else {
             capa = Utils.toByteArray(livroCapa);
 
+            alert.setTitle("\uD83D\uDE09️Conseguiu");
+
 
             Livro livro = new Livro(capa, titulo, descricao, false);
-             int tamanhoArray = MainActivity.livros.length;
+          //   int tamanhoArray = MainActivity.livros.length;
 
-
+/*
             MainActivity.livros = Arrays.copyOf(MainActivity.livros,
                     tamanhoArray + 1);
 
@@ -115,10 +117,11 @@ public class CadastroActivity extends AppCompatActivity {
             MainActivity.livros[tamanhoArray] = livro;
 
 
-            myBooksDb.daoLivro().inserir(livro);
+
 
             tamanhoArray = 0;
-
+            */
+            myBooksDb.daoLivro().inserir(livro);
             alert.setMessage("É isso meu jovem");
 
             txtTitulo.setText("");

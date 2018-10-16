@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import br.com.senaijandira.mybooks.fragments.FragmentLivrosGerais;
 import br.com.senaijandira.mybooks.fragments.FragmentLivrosLidos;
+import br.com.senaijandira.mybooks.fragments.FragmentNaoLidos;
 import br.com.senaijandira.mybooks.model.Livro;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
                     openFragmentGeral();
                 } else if(tab.getPosition() == 1) {
                     openFragmentLidos();
+                } else if(tab.getPosition() == 2) {
+                    openFragmentNaoLidos();
                 }
             }
 
@@ -76,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
 
         //O frameLayout será substituido pelo class FragmentLivrosGerais
         ft.replace(R.id.frameLayout, new FragmentLivrosLidos());
+
+        ft.commit();
+    }
+
+    //Irá abrir o fragment dos livros não lidos
+    public void openFragmentNaoLidos() {
+        FragmentTransaction ft = fm.beginTransaction();
+
+        //O frameLayout será substituido pelo class FragmentLivrosGerais
+        ft.replace(R.id.frameLayout, new FragmentNaoLidos());
 
         ft.commit();
     }

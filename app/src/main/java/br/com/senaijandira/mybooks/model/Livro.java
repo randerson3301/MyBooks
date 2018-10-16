@@ -30,6 +30,14 @@ public class Livro {
         this.added = added;
     }
 
+    public Livro(int id, byte[] capa, String titulo, String descricao, boolean added) {
+        this.id = id;
+        this.capa = capa;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.added = added;
+    }
+
     //Comportamento
     public int getId() {
         return id;

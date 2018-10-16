@@ -2,6 +2,7 @@ package br.com.senaijandira.mybooks;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import br.com.senaijandira.mybooks.db.MyBooksDatabase;
 import br.com.senaijandira.mybooks.model.Livro;
 import br.com.senaijandira.mybooks.model.LivrosLidos;
+import br.com.senaijandira.mybooks.model.NaoLidos;
 
 public class LivrosAdapter extends ArrayAdapter<Livro> implements
         AdapterView.OnItemSelectedListener {
@@ -45,7 +47,7 @@ public class LivrosAdapter extends ArrayAdapter<Livro> implements
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         boolean added = false;
 
-        if(position == 1) {
+        if (position == 1) {
             //Toast.makeText(parent.getContext(), "Estou aqui! ", Toast.LENGTH_SHORT).show();
             if (!l.getAdded()) {
                 LivrosLidos lidos = new LivrosLidos();
@@ -59,11 +61,17 @@ public class LivrosAdapter extends ArrayAdapter<Livro> implements
             }
 
 
-        } else if(position == 2) {
-            //l.setLido(false);
+        } else if (position == 2) {
+            if (!l.getAdded()) {
+                NaoLidos naoLidos = new NaoLidos();
+                naoLidos.setIdGeral(l.getId());
+                myBooksDb.daoNaoLidos().inserir(naoLidos);
+                l.setAdded(true);
+
+                myBooksDb.daoLivro().atualizar(l);
+            }
         }
     }
-
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
@@ -71,20 +79,26 @@ public class LivrosAdapter extends ArrayAdapter<Livro> implements
 
     public void  deletarLivro(final Livro l, final View v) {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle("Excluir");
-        alert.setMessage("Tem certeza de que deseja excluir ?");
-        alert.setNegativeButton("Não", null);
+        if(!l.getAdded()) {
 
-        alert.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                myBooksDb.daoLivro().excluir(l);
-            }
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Excluir");
+            alert.setMessage("Tem certeza de que deseja excluir ?");
+            alert.setNegativeButton("Não", null);
 
-        });
+            alert.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    myBooksDb.daoLivro().excluir(l);
+                }
 
-        alert.show();
+            });
+            alert.show();
+
+        } else  {
+            Toast.makeText(getContext(), "O livro está em outra lista, não é possível excluí-lo. ", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
@@ -110,6 +124,8 @@ public class LivrosAdapter extends ArrayAdapter<Livro> implements
         //Pegando os ids da livrolayout.xml
         ImageView imageView = v.findViewById(R.id.imgLivroCapa);
 
+        ImageView imgUpdate = v.findViewById(R.id.imgUpdateLivro);
+
         TextView txtTitulo = v.findViewById(R.id.txtTituloLivro);
 
         TextView txtDesc = v.findViewById(R.id.txtLivroDescricao);
@@ -121,6 +137,17 @@ public class LivrosAdapter extends ArrayAdapter<Livro> implements
             @Override
             public void onClick(View view) {
                 deletarLivro( l , view);
+            }
+        });
+
+        //código para abrir a page de editar
+        imgUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), EditarActivity.class);
+                intent.putExtra("livro", l.getId());
+
+                getContext().startActivity(intent);
             }
         });
 

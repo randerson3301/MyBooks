@@ -19,5 +19,10 @@
         <item>  Não li </item>
     </string-array>
 
+    <string-array name="optionsNaoLidos">
+        <item>Selecione...</item>
+        <item> Já li</item>
+    </string-array>
+
 
 </resources>
